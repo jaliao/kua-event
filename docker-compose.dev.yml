@@ -35,6 +35,8 @@ services:
       - .env
     environment:
       - NODE_OPTIONS=--max-old-space-size=6144
+      # 容器內連 db 服務（覆寫 .env 中給本機命令用的 localhost）
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?schema=public
 
   cloudflared:
     image: cloudflare/cloudflared:latest
@@ -42,6 +44,10 @@ services:
     # TUNNEL_TOKEN 由環境變數傳入，不放在 command 避免解析錯誤
     command: tunnel --no-autoupdate --protocol http2 run
     restart: unless-stopped
+    # 本機開發預設不啟動；需要對外 tunnel 時用：
+    #   docker compose --profile tunnel up cloudflared
+    profiles:
+      - tunnel
     depends_on:
       - web
     env_file:
