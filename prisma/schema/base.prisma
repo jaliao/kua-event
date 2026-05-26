@@ -1,0 +1,16 @@
+// ----------------------------------------------
+// base.prisma — Generator 與 Datasource 設定
+// 2026-05-26
+// prisma/schema/base.prisma
+// ----------------------------------------------
+// 多檔案 Schema：本檔僅放 generator / datasource，
+// 業務模型分散於 auth.prisma、event.prisma。
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma_client"
+}
+
+datasource db {
+  provider = "postgresql"
+}

@@ -1,0 +1,80 @@
+// ----------------------------------------------
+// event.prisma — 票券業務模型
+// 2026-05-26
+// prisma/schema/event.prisma
+// ----------------------------------------------
+// 四個獨立場次（紐約早/晚、LA 早/晚），每場為獨立活動。
+// 票券分早鳥票（EARLY_BIRD）與團體票（GROUP），皆不需驗票。
+
+enum TicketType {
+  EARLY_BIRD // 早鳥票：上傳名單後由系統 Email 寄發
+  GROUP // 團體票：以團體為單位批次產生，匯出 Excel 由窗口自行分派
+}
+
+// 活動（場次）。themeColor 存 config/theme-colors.ts 的色彩 key，
+// 由 Zod 對照 config 驗證（淺底深色，10 組可選）。
+model Event {
+  id           Int      @id @default(autoincrement())
+  title        String
+  keyVisualUrl String? // 主視覺，選填
+  location     String
+  eventAt      DateTime // 活動時間
+  notes        String?  @db.Text // 活動注意事項
+  themeColor   String   @default("slate") // config/theme-colors.ts 的 key
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  batches  TicketBatch[]
+  tickets  Ticket[]
+  counters TicketCounter[]
+}
+
+// 票券批次。團體票：每次「新增團體票」建立一筆（含 groupName + quantity），
+// 追加票數時另建新批次（不修改既有批次）。早鳥票：一次名單上傳為一批次。
+model TicketBatch {
+  id        Int        @id @default(autoincrement())
+  eventId   Int
+  type      TicketType
+  groupName String? // 團體名稱（團體票必填，早鳥票留空）
+  quantity  Int
+  createdAt DateTime   @default(now())
+
+  event   Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  tickets Ticket[]
+
+  @@index([eventId])
+}
+
+// 單張票券。accessToken 用於票券頁網址與 QR Code（免登入、免驗票）。
+model Ticket {
+  id           Int        @id @default(autoincrement())
+  eventId      Int
+  batchId      Int?
+  type         TicketType
+  serialNo     String     @unique // 票券編號，per event+type 流水號
+  accessToken  String     @unique @default(uuid()) // 票券頁存取 token（URL / QR）
+  groupName    String? // 團體名稱（團體票）
+  claimerName  String? // 領票人姓名（窗口/名單填寫）
+  claimerEmail String? // 領票人 Email
+  sentAt       DateTime? // 早鳥票寄發時間
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  event Event        @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  batch TicketBatch? @relation(fields: [batchId], references: [id], onDelete: SetNull)
+
+  @@index([eventId])
+  @@index([batchId])
+}
+
+// 票券流水號計數器（per event + type），以 $transaction + upsert 原子遞增。
+model TicketCounter {
+  id      Int        @id @default(autoincrement())
+  eventId Int
+  type    TicketType
+  counter Int        @default(0)
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, type])
+}
