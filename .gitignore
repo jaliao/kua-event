@@ -38,6 +38,9 @@ yarn-error.log*
 # prisma generated client
 /prisma/generated/
 
+# Claude Code 本機設定（不納版控；commands / skills 仍會提交）
+.claude/settings.local.json
+
 # vercel
 .vercel
 

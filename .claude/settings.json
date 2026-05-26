@@ -1,0 +1,45 @@
+{
+  "language": "traditional chinese",
+  "permissions": {
+    "allow": [
+      "Read",
+      "Bash(npm install*)",
+      "Bash(npm run *)",
+      "Bash(npx prisma *)",
+      "Bash(make *)",
+      "Bash(docker compose *)",
+      "Bash(git status*)",
+      "Bash(git log*)",
+      "Bash(git diff*)",
+      "Bash(git branch *)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
+    ]
+  },
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "env": {
+    "TZ": "Asia/Taipei"
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // .tool_response.filePath // empty' | { read -r f; case \"$f\" in *.ts|*.tsx|*.js|*.jsx|*.mjs|*.cjs) npx eslint --fix \"$f\" ;; esac; } 2>/dev/null || true",
+            "statusMessage": "ESLint --fix..."
+          },
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // .tool_response.filePath // empty' | grep -qE '\\.(ts|tsx)$' && npx tsc --noEmit 2>&1 | tail -30 || true",
+            "statusMessage": "tsc --noEmit..."
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+schema: spec-driven
+
+context: |
+  專案：kau-event 跨團體票系統（團體票 / 早鳥票，四個獨立場次）。
+  技術棧：Next.js 16 App Router + React 19 + TypeScript、Prisma 7（多檔案 schema + pg adapter）、
+    PostgreSQL、NextAuth 5 Google OAuth + Email 白名單、Tailwind 4、Zod。
+  慣例：程式碼註解與文件一律使用繁體中文；Server Components 優先；Server Actions 統一回傳
+    ActionResponse（lib/action-response.ts）；Config-Driven enums 置於 config/；
+    Zod schema 置於 lib/schemas/；跨元件查詢置於 lib/data/。
+  領域關鍵約束：全程免驗票（無掃碼 / 登入 / 報到）；團體票批次為「新增不修改」（追加票數另建批次）；
+    票券流水號以 TicketCounter per event+type 原子遞增。
+  詳見 README.md 與 docs/requirement.md。
+
+# Project context (optional)
+# This is shown to AI when creating artifacts.
+# Add your tech stack, conventions, style guides, domain knowledge, etc.
+# Example:
+#   context: |
+#     Tech stack: TypeScript, React, Node.js
+#     We use conventional commits
+#     Domain: e-commerce platform
+
+# Per-artifact rules (optional)
+# Add custom rules for specific artifacts.
+# Example:
+#   rules:
+#     proposal:
+#       - Keep proposals under 500 words
+#       - Always include a "Non-goals" section
+#     tasks:
+#       - Break tasks into chunks of max 2 hours
