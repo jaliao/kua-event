@@ -1,7 +1,7 @@
 schema: spec-driven
 
 context: |
-  專案：kau-event 跨團體票系統（團體票 / 早鳥票，四個獨立場次）。
+  專案：kua-event 跨團體票系統（團體票 / 早鳥票，四個獨立場次）。
   技術棧：Next.js 16 App Router + React 19 + TypeScript、Prisma 7（多檔案 schema + pg adapter）、
     PostgreSQL、NextAuth 5 Google OAuth + Email 白名單、Tailwind 4、Zod。
   慣例：程式碼註解與文件一律使用繁體中文；Server Components 優先；Server Actions 統一回傳

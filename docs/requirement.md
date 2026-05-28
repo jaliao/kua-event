@@ -1,6 +1,6 @@
-跨團體票系統（kau-event）需求文件報告
+跨團體票系統（kua-event）需求文件報告
 一、 專案基本資訊與適用範圍
-專案名稱： 跨團體票系統（英文：kau-event）(依據您的最新指示更新)
+專案名稱： 跨團體票系統（英文：kua-event）(依據您的最新指示更新)
 正式網域： https://event.kuaglobal.org/ (依據您的最新指示更新)
 測試網域： https://kua-event.blockcode.com.tw (依據您的最新指示更新)
 適用範圍： 涵蓋「團體票」與「早鳥票」1。

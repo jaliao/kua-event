@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Project Overview (kau-event)
+## Project Overview (kua-event)
 
 跨團體票系統 — a cross-group event ticketing system for issuing and distributing **group tickets (團體票)** and **early-bird tickets (早鳥票)**.
 

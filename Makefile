@@ -1,6 +1,6 @@
 # /*
 #  * ----------------------------------------------
-#  * Makefile for kau-event（跨團體票系統）
+#  * Makefile for kua-event（跨團體票系統）
 #  * 2026-01-15
 #  * ----------------------------------------------
 #  */
@@ -11,12 +11,12 @@ ifneq ("$(wildcard .env)","")
     export $(shell sed 's/=.*//' .env)
 endif
 
-PROJECT_NAME=kau-event
+PROJECT_NAME=kua-event
 DOCKERHUB_USER=jaliao
 
 # 資料庫連線參數（可由 .env 覆寫；供 Makefile 內 psql / pg_dump 使用）
 POSTGRES_USER ?= postgres
-POSTGRES_DB ?= kau_event
+POSTGRES_DB ?= kua_event
 WEB_IMAGE=$(DOCKERHUB_USER)/$(PROJECT_NAME)-web
 DB_IMAGE=$(DOCKERHUB_USER)/$(PROJECT_NAME)-db
 # Prisma 命令使用本機資料庫連線
@@ -54,7 +54,7 @@ PROD_COMPOSE=$(DOCKER_COMPOSE) -f docker-compose.prod.yml
 help: ## 📖 顯示所有可用命令
 	@echo ""
 	@echo "╔════════════════════════════════════════════════════════════════╗"
-	@echo "║            跨團體票系統 (kau-event) Makefile 命令列表          ║"
+	@echo "║            跨團體票系統 (kua-event) Makefile 命令列表          ║"
 	@echo "╠════════════════════════════════════════════════════════════════╣"
 	@echo "║                                                                ║"
 	@echo "║  🚀 快速開始                                                   ║"
@@ -429,7 +429,7 @@ tunnel-vps3: ## 開啟 VPS3 Postgres SSH Tunnel（localhost:15432）
 	@/home/psyduck/devops-toolkit/remote-admin/tunnel/pg-tunnel-vps3.sh
 
 tunnel-deploy: ## 開啟 VPS3 Deploy Docker
-	@/home/psyduck/devops-toolkit/remote-admin/tunnel/kau-event-tunnel-deploy.sh
+	@/home/psyduck/devops-toolkit/remote-admin/tunnel/kua-event-tunnel-deploy.sh
 
 prisma-vps3-status: ## 檢查 VPS3 Migration 狀態（建議先跑）
 	@echo "Prisma migrate status (VPS3)..."

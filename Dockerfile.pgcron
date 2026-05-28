@@ -19,4 +19,4 @@ RUN echo "shared_preload_libraries = 'pg_cron'" >> /usr/share/postgresql/postgre
 # COPY ./database/01_init.sql /docker-entrypoint-initdb.d/01_init.sql
 
 # 預設 cron database（可在 docker-compose 指定）
-ENV POSTGRES_DB=kau_event
+ENV POSTGRES_DB=kua_event

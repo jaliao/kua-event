@@ -1,4 +1,4 @@
-# kau-event — 跨團體票系統
+# kua-event — 跨團體票系統
 
 > 版本：v0.1.0
 
@@ -167,41 +167,33 @@ Node 20.9+、PostgreSQL、（選用）Docker。
 
 ### 本機開發
 
+以下只做一次
+
 ```bash
 cp .env.example .env          # 填入 DATABASE_URL 與 Google OAuth / AUTH_SECRET
 npm install
-npm run db:generate           # 產生 Prisma Client
-npm run db:migrate            # 建立並套用 migration
-npm run db:seed               # 種子：白名單管理員 + 四個場次
-npm run dev                   # http://localhost:3000
 ```
 
-### npm 指令
+重新建立開發環境
 
-| 指令 | 說明 |
-|------|------|
-| `npm run dev` | 啟動開發伺服器（Turbopack） |
-| `npm run build` | 正式建置（同時為 TypeScript + 路由檢查的驗證關卡） |
-| `npm run lint` | ESLint |
-| `npm run db:generate` | 重新產生 Prisma Client（改 schema 後執行） |
-| `npm run db:migrate` | 建立並套用 migration（`prisma migrate dev`） |
-| `npm run db:studio` | 開啟 Prisma Studio |
-| `npm run db:seed` | 執行種子資料 |
+```bash
+make clean
+```
 
-> 尚無測試套件，`npm run build` 為主要驗證關卡。
+用以下指令來建立開發環境資料庫
 
-### Makefile（Docker 工作流）
+```bash
+make prisma-dev-status: ## 檢查 Dev Migration 狀態（建議先跑）
+make prisma-dev-deploy: ## 部署 Migrations 到 DEV
+make prisma-dev-seed: ## 部署 Seed 資料到 DEV
+make prisma-dev-studio: ## 選用
+```
 
-| 指令 | 說明 |
-|------|------|
-| `make dev` | 以 Docker 啟動開發環境（web + db + cloudflared） |
-| `make schema-update` | 完整 Schema 更新流程（format → validate → migrate → generate → restart） |
-| `make schema-quick` | 快速更新（不建立 migration） |
-| `make prisma-studio` | 開啟 Prisma Studio |
-| `make db-shell` / `make db-backup` | 進入 PostgreSQL CLI / 備份資料庫 |
-| `make prisma-vps3-deploy` | 透過 SSH tunnel 部署 migration 至 VPS3 |
+起動伺服器
 
-完整清單見 `make help`。
+```bash
+make dev
+```
 
 ---
 

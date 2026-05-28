@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "跨團體票系統",
-  description: "kau-event — 團體票與早鳥票發放系統",
+  description: "kua-event — 團體票與早鳥票發放系統",
 };
 
 export default function RootLayout({

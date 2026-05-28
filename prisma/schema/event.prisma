@@ -15,6 +15,7 @@ enum TicketType {
 // 由 Zod 對照 config 驗證（淺底深色，10 組可選）。
 model Event {
   id           Int      @id @default(autoincrement())
+  code         String   @unique // 活動代號（英數、大寫、唯一），票券編號前綴，例 NY01
   title        String
   keyVisualUrl String? // 主視覺，選填
   location     String
@@ -51,7 +52,7 @@ model Ticket {
   eventId      Int
   batchId      Int?
   type         TicketType
-  serialNo     String     @unique // 票券編號，per event+type 流水號
+  serialNo     String     @unique // 票券編號，格式 {活動代號}{流水號:4}，例 NY010001
   accessToken  String     @unique @default(uuid()) // 票券頁存取 token（URL / QR）
   groupName    String? // 團體名稱（團體票）
   claimerName  String? // 領票人姓名（窗口/名單填寫）
@@ -67,14 +68,11 @@ model Ticket {
   @@index([batchId])
 }
 
-// 票券流水號計數器（per event + type），以 $transaction + upsert 原子遞增。
+// 票券流水號計數器（per event，跨票種共用），以 $transaction + upsert 原子遞增。
 model TicketCounter {
-  id      Int        @id @default(autoincrement())
-  eventId Int
-  type    TicketType
-  counter Int        @default(0)
+  id      Int @id @default(autoincrement())
+  eventId Int @unique
+  counter Int @default(0)
 
   event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
-
-  @@unique([eventId, type])
 }

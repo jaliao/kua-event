@@ -21,27 +21,27 @@ async function main() {
     create: { email: "justin@blockcode.com.tw", note: "初始管理員" },
   });
 
-  // 四個獨立場次
+  // 四個獨立場次（code 為活動代號，唯一）
   const sessions = [
-    { title: "紐約場（早場）", location: "New York", themeColor: "rose" },
-    { title: "紐約場（晚場）", location: "New York", themeColor: "indigo" },
-    { title: "洛杉磯場（早場）", location: "Los Angeles", themeColor: "amber" },
-    { title: "洛杉磯場（晚場）", location: "Los Angeles", themeColor: "teal" },
+    { code: "NY01", title: "紐約場（早場）", location: "New York", themeColor: "rose" },
+    { code: "NY02", title: "紐約場（晚場）", location: "New York", themeColor: "indigo" },
+    { code: "LA01", title: "洛杉磯場（早場）", location: "Los Angeles", themeColor: "amber" },
+    { code: "LA02", title: "洛杉磯場（晚場）", location: "Los Angeles", themeColor: "teal" },
   ];
 
   for (const s of sessions) {
-    const exists = await prisma.event.findFirst({ where: { title: s.title } });
-    if (!exists) {
-      await prisma.event.create({
-        data: {
-          title: s.title,
-          location: s.location,
-          themeColor: s.themeColor,
-          eventAt: new Date("2026-09-01T19:00:00Z"),
-          notes: "請於開演前 30 分鐘入場。",
-        },
-      });
-    }
+    await prisma.event.upsert({
+      where: { code: s.code },
+      update: {},
+      create: {
+        code: s.code,
+        title: s.title,
+        location: s.location,
+        themeColor: s.themeColor,
+        eventAt: new Date("2026-09-01T19:00:00Z"),
+        notes: "請於開演前 30 分鐘入場。",
+      },
+    });
   }
 
   console.log("Seed 完成 ✅");
