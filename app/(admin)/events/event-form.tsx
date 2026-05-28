@@ -16,6 +16,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { eventSchema, type EventInput } from "@/lib/schemas/event";
 import { getThemeColorOptions, getThemeColor } from "@/config/theme-colors";
 import { createEvent, updateEvent } from "./actions";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 type EventFormValues = {
@@ -101,16 +105,17 @@ export function EventForm({ eventId, defaultValues }: EventFormProps) {
       noValidate
     >
       {eventId && (
-        <p className="rounded bg-amber-50 p-2 text-sm text-amber-800">
+        <p className="rounded-md bg-amber-50 p-2 text-sm text-amber-800">
           編輯內容會即時影響已發出票券的票面顯示（標題、時間、主題色等）。
         </p>
       )}
 
-      <Field label="活動代號" error={errors.code?.message}>
-        <input
+      <Field label="活動代號" htmlFor="code" error={errors.code?.message}>
+        <Input
+          id="code"
           type="text"
           placeholder="例：NY01"
-          className={cn(inputCls, "uppercase")}
+          className="uppercase"
           {...register("code")}
         />
         <span className="block text-xs text-muted-foreground">
@@ -118,33 +123,33 @@ export function EventForm({ eventId, defaultValues }: EventFormProps) {
         </span>
       </Field>
 
-      <Field label="活動標題" error={errors.title?.message}>
-        <input type="text" className={inputCls} {...register("title")} />
+      <Field label="活動標題" htmlFor="title" error={errors.title?.message}>
+        <Input id="title" type="text" {...register("title")} />
       </Field>
 
-      <Field label="主視覺網址（選填）" error={errors.keyVisualUrl?.message}>
-        <input
+      <Field
+        label="主視覺網址（選填）"
+        htmlFor="keyVisualUrl"
+        error={errors.keyVisualUrl?.message}
+      >
+        <Input
+          id="keyVisualUrl"
           type="url"
           placeholder="https://..."
-          className={inputCls}
           {...register("keyVisualUrl")}
         />
       </Field>
 
-      <Field label="地點" error={errors.location?.message}>
-        <input type="text" className={inputCls} {...register("location")} />
+      <Field label="地點" htmlFor="location" error={errors.location?.message}>
+        <Input id="location" type="text" {...register("location")} />
       </Field>
 
-      <Field label="活動時間" error={errors.eventAt?.message}>
-        <input
-          type="datetime-local"
-          className={inputCls}
-          {...register("eventAt")}
-        />
+      <Field label="活動時間" htmlFor="eventAt" error={errors.eventAt?.message}>
+        <Input id="eventAt" type="datetime-local" {...register("eventAt")} />
       </Field>
 
-      <Field label="注意事項（選填）" error={errors.notes?.message}>
-        <textarea rows={3} className={inputCls} {...register("notes")} />
+      <Field label="注意事項（選填）" htmlFor="notes" error={errors.notes?.message}>
+        <Textarea id="notes" rows={3} {...register("notes")} />
       </Field>
 
       <Field label="主題色" error={errors.themeColor?.message}>
@@ -162,7 +167,7 @@ export function EventForm({ eventId, defaultValues }: EventFormProps) {
                 "h-8 w-8 rounded-full border-2",
                 opt.bg,
                 selectedTheme === opt.value
-                  ? "ring-2 ring-offset-2 ring-slate-900"
+                  ? "ring-2 ring-offset-2 ring-ring"
                   : "border-transparent",
               )}
             />
@@ -184,39 +189,34 @@ export function EventForm({ eventId, defaultValues }: EventFormProps) {
       </div>
 
       {globalError && (
-        <p className="rounded bg-red-50 p-2 text-sm text-red-700">
+        <p className="rounded-md bg-destructive/10 p-2 text-sm text-destructive">
           {globalError}
         </p>
       )}
 
-      <button
-        type="submit"
-        disabled={isPending}
-        className="w-full rounded-md border px-4 py-2 font-medium hover:bg-accent disabled:opacity-50"
-      >
+      <Button type="submit" disabled={isPending} className="w-full">
         {isPending ? "處理中…" : eventId ? "儲存變更" : "建立活動"}
-      </button>
+      </Button>
     </form>
   );
 }
 
-const inputCls =
-  "w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400";
-
 function Field({
   label,
+  htmlFor,
   error,
   children,
 }: {
   label: string;
+  htmlFor?: string;
   error?: string;
   children: React.ReactNode;
 }) {
   return (
-    <label className="block space-y-1">
-      <span className="text-sm font-medium">{label}</span>
+    <div className="space-y-1.5">
+      <Label htmlFor={htmlFor}>{label}</Label>
       {children}
-      {error && <span className="block text-sm text-red-600">{error}</span>}
-    </label>
+      {error && <span className="block text-sm text-destructive">{error}</span>}
+    </div>
   );
 }

@@ -19,6 +19,9 @@ import {
   type GroupBatchInput,
 } from "@/lib/schemas/batch";
 import { createGroupBatch } from "./actions";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 type GroupBatchFormValues = {
   groupName: string;
@@ -75,51 +78,44 @@ export function GroupBatchForm({ eventId }: { eventId: number }) {
       className="space-y-4 rounded-md border p-4"
       noValidate
     >
-      <label className="block space-y-1">
-        <span className="text-sm font-medium">團體名稱</span>
-        <input type="text" className={inputCls} {...register("groupName")} />
+      <div className="space-y-1.5">
+        <Label htmlFor="groupName">團體名稱</Label>
+        <Input id="groupName" type="text" {...register("groupName")} />
         {errors.groupName && (
-          <span className="block text-sm text-red-600">
+          <span className="block text-sm text-destructive">
             {errors.groupName.message}
           </span>
         )}
-      </label>
+      </div>
 
-      <label className="block space-y-1">
-        <span className="text-sm font-medium">數量</span>
-        <input
+      <div className="space-y-1.5">
+        <Label htmlFor="quantity">數量</Label>
+        <Input
+          id="quantity"
           type="number"
           min={1}
           max={MAX_BATCH_QUANTITY}
-          className={inputCls}
           {...register("quantity")}
         />
         <span className="block text-xs text-muted-foreground">
           一次最多 {MAX_BATCH_QUANTITY} 張。需追加票數時請另建新批次（既有批次不可修改）。
         </span>
         {errors.quantity && (
-          <span className="block text-sm text-red-600">
+          <span className="block text-sm text-destructive">
             {errors.quantity.message}
           </span>
         )}
-      </label>
+      </div>
 
       {globalError && (
-        <p className="rounded bg-red-50 p-2 text-sm text-red-700">
+        <p className="rounded-md bg-destructive/10 p-2 text-sm text-destructive">
           {globalError}
         </p>
       )}
 
-      <button
-        type="submit"
-        disabled={isPending}
-        className="w-full rounded-md border px-4 py-2 font-medium hover:bg-accent disabled:opacity-50"
-      >
+      <Button type="submit" disabled={isPending} className="w-full">
         {isPending ? "建立中…" : "建立團體票批次"}
-      </button>
+      </Button>
     </form>
   );
 }
-
-const inputCls =
-  "w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400";

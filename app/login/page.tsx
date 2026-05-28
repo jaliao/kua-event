@@ -4,8 +4,17 @@
  * 2026-05-26
  * app/login/page.tsx
  * ----------------------------------------------
+ * 樣式參考 shadcn login-01（卡片置中），保留白名單錯誤提示與 OAuth 行為。
  */
 import { signIn } from "@/auth";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export default async function LoginPage({
   searchParams,
@@ -15,33 +24,31 @@ export default async function LoginPage({
   const { error } = await searchParams;
 
   return (
-    <div className="flex min-h-full flex-1 items-center justify-center p-6">
-      <div className="w-full max-w-sm space-y-6 rounded-lg border p-8 text-center shadow-sm">
-        <div>
-          <h1 className="text-xl font-bold">跨團體票系統</h1>
-          <p className="mt-1 text-sm text-muted-foreground">後台管理員登入</p>
-        </div>
+    <div className="flex min-h-svh flex-1 items-center justify-center bg-muted p-6">
+      <Card className="w-full max-w-sm">
+        <CardHeader className="text-center">
+          <CardTitle className="text-xl">跨團體票系統</CardTitle>
+          <CardDescription>後台管理員登入</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {error === "NotWhitelisted" && (
+            <p className="rounded-md bg-destructive/10 p-2 text-center text-sm text-destructive">
+              此 Email 不在白名單中，無法登入。
+            </p>
+          )}
 
-        {error === "NotWhitelisted" && (
-          <p className="rounded bg-red-50 p-2 text-sm text-red-700">
-            此 Email 不在白名單中，無法登入。
-          </p>
-        )}
-
-        <form
-          action={async () => {
-            "use server";
-            await signIn("google", { redirectTo: "/" });
-          }}
-        >
-          <button
-            type="submit"
-            className="w-full rounded-md border px-4 py-2 font-medium hover:bg-accent"
+          <form
+            action={async () => {
+              "use server";
+              await signIn("google", { redirectTo: "/" });
+            }}
           >
-            使用 Google 登入
-          </button>
-        </form>
-      </div>
+            <Button type="submit" variant="outline" className="w-full">
+              使用 Google 登入
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }

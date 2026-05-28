@@ -8,6 +8,15 @@
 import Link from "next/link";
 import { getEvents } from "@/lib/data/events";
 import { getThemeColor } from "@/config/theme-colors";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export default async function DashboardPage() {
   const events = await getEvents();
@@ -16,12 +25,9 @@ export default async function DashboardPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">活動場次</h1>
-        <Link
-          href="/events/new"
-          className="rounded-md border px-3 py-1.5 text-sm font-medium hover:bg-accent"
-        >
-          新增活動
-        </Link>
+        <Button asChild>
+          <Link href="/events/new">新增活動</Link>
+        </Button>
       </div>
 
       {events.length === 0 ? (
@@ -33,41 +39,35 @@ export default async function DashboardPage() {
           {events.map((event) => {
             const theme = getThemeColor(event.themeColor);
             return (
-              <li
-                key={event.id}
-                className={`flex flex-col rounded-lg border-l-4 p-4 shadow-sm ${theme.bg} ${theme.text} ${theme.accent}`}
-              >
-                <div className="text-xs font-medium opacity-70">
-                  {event.code}
-                </div>
-                <div className="font-semibold">{event.title}</div>
-                <div className="text-sm opacity-80">
-                  {event.eventAt.toLocaleDateString("zh-TW")}
-                </div>
-                <div className="mt-1 text-sm opacity-80">
-                  票券 {event.counts.total} 張（團體 {event.counts.group} ／ 早鳥{" "}
-                  {event.counts.earlyBird}）
-                </div>
-                <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-sm">
-                  <Link
-                    href={`/events/${event.id}/edit`}
-                    className="underline opacity-80 hover:opacity-100"
-                  >
-                    編輯
-                  </Link>
-                  <Link
-                    href={`/events/${event.id}/batches`}
-                    className="underline opacity-80 hover:opacity-100"
-                  >
-                    團體票
-                  </Link>
-                  <Link
-                    href={`/events/${event.id}/early-bird`}
-                    className="underline opacity-80 hover:opacity-100"
-                  >
-                    早鳥票
-                  </Link>
-                </div>
+              <li key={event.id}>
+                <Card
+                  className={cn("h-full border-l-4", theme.bg, theme.text, theme.accent)}
+                >
+                  <CardHeader>
+                    <div className="text-xs font-medium opacity-70">
+                      {event.code}
+                    </div>
+                    <CardTitle>{event.title}</CardTitle>
+                    <div className="text-sm opacity-80">
+                      {event.eventAt.toLocaleDateString("zh-TW")}
+                    </div>
+                  </CardHeader>
+                  <CardContent className="text-sm opacity-80">
+                    票券 {event.counts.total} 張（團體 {event.counts.group} ／ 早鳥{" "}
+                    {event.counts.earlyBird}）
+                  </CardContent>
+                  <CardFooter className="flex flex-wrap gap-2">
+                    <Button asChild variant="secondary" size="sm">
+                      <Link href={`/events/${event.id}/edit`}>編輯</Link>
+                    </Button>
+                    <Button asChild variant="secondary" size="sm">
+                      <Link href={`/events/${event.id}/batches`}>團體票</Link>
+                    </Button>
+                    <Button asChild variant="secondary" size="sm">
+                      <Link href={`/events/${event.id}/early-bird`}>早鳥票</Link>
+                    </Button>
+                  </CardFooter>
+                </Card>
               </li>
             );
           })}
